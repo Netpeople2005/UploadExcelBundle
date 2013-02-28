@@ -1,0 +1,7 @@
+parameters:
+#    upload_excel.example.class: K2\UploadExcelBundle\Example
+
+services:
+#    upload_excel.example:
+#        class: %upload_excel.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
