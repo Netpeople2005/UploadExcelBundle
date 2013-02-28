@@ -16,16 +16,17 @@ class ColumnsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if(!isset($options['data']) || $options['data'] instanceof ConfigInterface){
+        if (!isset($options['data']) || $options['data'] instanceof ConfigInterface) {
             //excepcion
         }
-//        $builder->add("excelColumns", "collection", array(
-//            'type' => new ExcelColumnType(),
-//        ));
-        $associations = $builder->create("columnsAssociation", "form");
-        foreach($options['data']->getColumnNames() as $name){
-            $associations->add($name, 'choice',array(
+
+        $associations = $builder->create("columnsAssociation", "form", array(
+            'by_reference' => false,
+                ));
+        foreach ($options['data']->getColumnNames() as $name) {
+            $associations->add($name, 'choice', array(
                 'label' => $name,
+                'empty_value' => '--select--',
                 'choices' => $options['data']->getExcelColumns(),
             ));
         }

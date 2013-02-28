@@ -9,6 +9,7 @@ use K2\UploadExcelBundle\Form\Type\ColumnsType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Form;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use K2\UploadExcelBundle\Result;
 
 class ExcelReader
 {
@@ -38,6 +39,12 @@ class ExcelReader
      */
     protected $config;
 
+    /**
+     *
+     * @var \PHPExcel
+     */
+    protected $excel;
+
     function __construct(FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher, $rootDir)
     {
         $this->formFactory = $formFactory;
@@ -47,26 +54,71 @@ class ExcelReader
 
     public function createForm(ConfigInterface $config, FormTypeInterface $form = null, array $options = array())
     {
+        $this->config = $config;
+
         if (null === $form) {
             $form = new ColumnsType();
         }
 
+        $this->readHeadersExcel();
+
         return $this->form = $this->formFactory->create($form, $config, $options);
     }
 
-    public function proccessMatch(Request $request)
+    public function execute(Request $request)
     {
         $this->form->bind($request);
-    }
 
-    public function execute()
-    {
+        $result = new Result();
+
+        $data = $this->excel->getActiveSheet()->toArray(null, true, true, true);
+
+        list($columnHeader, $rowHeader) = $this->config->getHeadersPosition();
+
+        unset($data[$rowHeader]);
         
+        $data = $this->convertIndexesToHeaderNames($data);
+
+        $result->setData($data);
+
+        var_dump($result);
     }
 
-    protected function readColumnsExcel()
+    protected function readHeadersExcel()
     {
-        \PHPExcel_IOFactory::createReaderForFile($this->rootDir . 'files/excel.xls');
+        $excelFile = dirname($this->rootDir) . '/files/excel.xls';
+
+        $this->excel = \PHPExcel_IOFactory::load($excelFile);
+        $sheet = $this->excel->getActiveSheet();
+
+        list($column, $row) = $this->config->getHeadersPosition();
+
+        $headers = array();
+
+        while ($sheet->cellExists("{$column}{$row}")) {
+            $headers[$column] = $sheet->getCell("{$column}{$row}")->getValue();
+            ++$column;
+        }
+
+        if (count($this->config->getColumnNames()) > count($headers)) {
+            //excepcion de que están haciendo falta columnas en el excel por leer
+        }
+
+        $this->config->setExcelColumns($headers);
+    }
+
+    protected function convertIndexesToHeaderNames(array $data)
+    {
+        $columnsName = array_flip($this->config->getColumnsAssociation());
+
+        foreach ($data as $rowIndex => $rowData) {
+            foreach ($rowData as $column => $value) {
+                unset($data[$rowIndex][$column]);
+                $data[$rowIndex][$columnsName[$column]] = $value;
+            }
+        }
+        
+        return $data;
     }
 
 }

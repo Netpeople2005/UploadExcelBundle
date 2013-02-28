@@ -15,13 +15,13 @@ class DefaultController extends Controller
         $config = new Config();
 
         $config->setColumnNames(array('nombres', 'apellidos', 'edad'))
-                ->setExcelColumns(array('mas fino', 'otra columna'));
+                ->setExcelColumns(array('mas fino', 'otra columna'))
+                ->setHeadersPosition();
 
         $form = $this->get("excel_reader")->createForm($config);
         
         if($this->getRequest()->isMethod('POST')){
-            $form->bind($this->getRequest());
-            var_dump($config);
+            $this->get("excel_reader")->execute($this->getRequest());
         }
 
         return $this->render('UploadExcelBundle:Default:index.html.twig'

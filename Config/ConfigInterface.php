@@ -18,5 +18,11 @@ interface ConfigInterface
     public function setExcelColumns(array $columns);
 
     public function getExcelColumns();
+
+    public function getHeadersPosition();
+
+    public function getColumnsAssociation();
+
+    public function setColumnsAssociation($columnsAssociation);
 }
 

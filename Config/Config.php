@@ -11,6 +11,7 @@ class Config implements ConfigInterface
     protected $columnNames;
     protected $excelColumns;
     protected $columnsAssociation;
+    protected $headersPosition;
 
     public function setColumnNames(array $culumnNames)
     {
@@ -35,10 +36,7 @@ class Config implements ConfigInterface
 
     public function setColumnsAssociation($columnsAssociation)
     {
-        $this->columnsAssociation = array();
-        foreach ($columnsAssociation as $columnName => $excelColumIndex) {
-            $this->columnsAssociation[$columnName] = $this->excelColumns[$excelColumIndex];
-        }
+        $this->columnsAssociation = $columnsAssociation;
         return $this;
     }
 
@@ -50,6 +48,17 @@ class Config implements ConfigInterface
     public function setExcelColumns(array $columns)
     {
         $this->excelColumns = $columns;
+        return $this;
+    }
+
+    public function getHeadersPosition()
+    {
+        return $this->headersPosition;
+    }
+
+    public function setHeadersPosition($column = 'A', $row = 1)
+    {
+        $this->headersPosition = array($column, $row);
         return $this;
     }
 
