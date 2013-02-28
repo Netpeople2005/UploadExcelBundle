@@ -28,6 +28,7 @@ class ColumnsType extends AbstractType
                 'label' => $name,
                 'empty_value' => '--select--',
                 'choices' => $options['data']->getExcelColumns(),
+                'data' => $options['data']->getDefaultMatch($name),
             ));
         }
         $builder->add($associations);

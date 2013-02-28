@@ -24,5 +24,7 @@ interface ConfigInterface
     public function getColumnsAssociation();
 
     public function setColumnsAssociation($columnsAssociation);
+    
+    public function getDefaultMatch($column);
 }
 

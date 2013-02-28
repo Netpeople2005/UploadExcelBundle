@@ -3,7 +3,6 @@
 namespace K2\UploadExcelBundle\Config;
 
 use K2\UploadExcelBundle\Config\ConfigInterface;
-use K2\UploadExcelBundle\ExcelColumn;
 
 class Config implements ConfigInterface
 {
@@ -60,6 +59,18 @@ class Config implements ConfigInterface
     {
         $this->headersPosition = array($column, $row);
         return $this;
+    }
+
+    public function getDefaultMatch($column)
+    {
+
+        foreach ($this->getExcelColumns() as $index => $name) {
+            if (strtoupper($name) === strtoupper($column)) {
+                return $index;
+            }
+        }
+
+        return null;
     }
 
 }

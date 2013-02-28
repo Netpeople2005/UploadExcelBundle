@@ -14,7 +14,7 @@ class DefaultController extends Controller
 
         $config = new Config();
 
-        $config->setColumnNames(array('nombres', 'apellidos', 'edad'))
+        $config->setColumnNames(array('nombres',/* 'apellidos',*/ 'edad','email'))
                 ->setExcelColumns(array('mas fino', 'otra columna'))
                 ->setHeadersPosition();
 

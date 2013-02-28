@@ -76,12 +76,12 @@ class ExcelReader
         list($columnHeader, $rowHeader) = $this->config->getHeadersPosition();
 
         unset($data[$rowHeader]);
-        
+
         $data = $this->convertIndexesToHeaderNames($data);
 
         $result->setData($data);
 
-        var_dump($result);
+        var_dump($this->config, $result);
     }
 
     protected function readHeadersExcel()
@@ -114,10 +114,12 @@ class ExcelReader
         foreach ($data as $rowIndex => $rowData) {
             foreach ($rowData as $column => $value) {
                 unset($data[$rowIndex][$column]);
-                $data[$rowIndex][$columnsName[$column]] = $value;
+                if (array_key_exists($column, $columnsName)) {
+                    $data[$rowIndex][$columnsName[$column]] = $value;
+                }
             }
         }
-        
+
         return $data;
     }
 
