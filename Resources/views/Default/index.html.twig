@@ -1,1 +1,9 @@
-Hello {{ name }}!
+{% extends "::base.html.twig" %}
+{% block body %}
+<h3>Formulario</h3>
+<form method="post">
+{{ form_row(form) }}
+        <input type="submit" />
+</form>
+{% endblock %}
+

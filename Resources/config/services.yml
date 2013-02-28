@@ -1,7 +1,10 @@
 parameters:
-#    upload_excel.example.class: K2\UploadExcelBundle\Example
+    excel_uploader.class: K2\UploadExcelBundle\Service\ExcelReader
 
 services:
-#    upload_excel.example:
-#        class: %upload_excel.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    excel_reader:
+        class: %excel_uploader.class%
+        arguments: 
+            - "@form.factory"
+            - "@event_dispatcher"
+            - %kernel.root_dir%
