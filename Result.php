@@ -23,7 +23,7 @@ class Result
 
     public function getValids()
     {
-        return array_diff((array)$this->data,(array) $this->invalids);
+        return (array) array_diff_key((array) $this->data, (array) $this->invalids);
     }
 
     public function getInvalids()
@@ -38,7 +38,7 @@ class Result
 
     public function getHeaders()
     {
-        return (array)$this->headers;
+        return (array) $this->headers;
     }
 
     public function setHeaders(array $headers)
@@ -51,6 +51,7 @@ class Result
         $this->data[$excelRow->getRow()] = $excelRow;
         return $this;
     }
+
     public function addRowInvalid(ExcelRowInterface $excelRow)
     {
         $this->invalids[$excelRow->getRow()] = $excelRow;
