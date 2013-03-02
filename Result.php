@@ -2,11 +2,12 @@
 
 namespace K2\UploadExcelBundle;
 
+use K2\UploadExcelBundle\ExcelRowInterface;
+
 class Result
 {
 
     protected $data;
-    protected $valids;
     protected $invalids;
     protected $headers;
 
@@ -15,39 +16,45 @@ class Result
         return $this->data;
     }
 
-    public function setData($data)
+    public function setData(array $data)
     {
         $this->data = $data;
     }
 
     public function getValids()
     {
-        return $this->valids;
-    }
-
-    public function setValids($valids)
-    {
-        $this->valids = $valids;
+        return array_diff((array)$this->data,(array) $this->invalids);
     }
 
     public function getInvalids()
     {
-        return $this->invalids;
+        return (array) $this->invalids;
     }
 
-    public function setInvalids($invalids)
+    public function setInvalids(array $invalids)
     {
         $this->invalids = $invalids;
     }
 
     public function getHeaders()
     {
-        return $this->headers;
+        return (array)$this->headers;
     }
 
-    public function setHeaders($headers)
+    public function setHeaders(array $headers)
     {
         $this->headers = $headers;
+    }
+
+    public function addRow(ExcelRowInterface $excelRow)
+    {
+        $this->data[$excelRow->getRow()] = $excelRow;
+        return $this;
+    }
+    public function addRowInvalid(ExcelRowInterface $excelRow)
+    {
+        $this->invalids[$excelRow->getRow()] = $excelRow;
+        return $this;
     }
 
 }

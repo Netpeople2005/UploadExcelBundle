@@ -11,7 +11,14 @@ class Config implements ConfigInterface
     protected $excelColumns;
     protected $columnsAssociation;
     protected $headersPosition;
+    protected $rowClass;
 
+    public function __construct()
+    {
+        $this->setHeadersPosition();
+    }
+
+    
     public function setColumnNames(array $culumnNames)
     {
         $this->columnNames = $culumnNames;
@@ -71,6 +78,17 @@ class Config implements ConfigInterface
         }
 
         return null;
+    }
+
+    public function getRowClass()
+    {
+        return $this->rowClass;
+    }
+
+    public function setRowClass($rowClass)
+    {
+        $this->rowClass = $rowClass;
+        return $this;
     }
 
 }

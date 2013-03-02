@@ -16,12 +16,18 @@ class DefaultController extends Controller
 
         $config->setColumnNames(array('nombres',/* 'apellidos',*/ 'edad','email'))
                 ->setExcelColumns(array('mas fino', 'otra columna'))
-                ->setHeadersPosition();
+                ->setRowClass('K2\\UploadExcelBundle\\Ejemplo');
 
         $form = $this->get("excel_reader")->createForm($config);
         
         if($this->getRequest()->isMethod('POST')){
-            $this->get("excel_reader")->execute($this->getRequest());
+            $result = $this->get("excel_reader")->execute($this->getRequest());
+            
+            var_dump($result);
+            
+            var_dump($this->get("excel_validator")->validate($result));
+            var_dump((string)current($result->getInvalids())->getErrors());
+            
         }
 
         return $this->render('UploadExcelBundle:Default:index.html.twig'

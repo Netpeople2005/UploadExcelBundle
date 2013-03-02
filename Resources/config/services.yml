@@ -1,5 +1,6 @@
 parameters:
     excel_uploader.class: K2\UploadExcelBundle\Service\ExcelReader
+    excel_validator.class: K2\UploadExcelBundle\Service\Validator
 
 services:
     excel_reader:
@@ -8,3 +9,9 @@ services:
             - "@form.factory"
             - "@event_dispatcher"
             - %kernel.root_dir%
+        calls:
+          -  [ setValidator, [ "@excel_validator" ] ]
+    excel_validator:
+        class: %excel_validator.class%
+        arguments: 
+            - "@validator"

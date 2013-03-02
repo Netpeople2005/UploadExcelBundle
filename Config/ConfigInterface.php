@@ -13,7 +13,7 @@ interface ConfigInterface
      */
     public function getColumnNames();
 
-    public function getValidations();
+    public function getRowClass();
 
     public function setExcelColumns(array $columns);
 
