@@ -8,7 +8,6 @@ services:
         arguments: 
             - "@form.factory"
             - "@event_dispatcher"
-            - %kernel.root_dir%
         calls:
           -  [ setValidator, [ "@excel_validator" ] ]
     excel_validator:
