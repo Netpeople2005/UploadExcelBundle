@@ -2,17 +2,14 @@
 
 namespace K2\UploadExcelBundle\Config;
 
-use K2\UploadExcelBundle\Config\ConfigInterface;
+use K2\UploadExcelBundle\Config\AbtractConfig;
 
-class Config implements ConfigInterface
+class Config extends AbstractConfig
 {
 
     protected $columnNames;
-    protected $excelColumns;
-    protected $columnsAssociation;
     protected $headersPosition;
     protected $rowClass;
-    protected $filename;
 
     public function __construct()
     {
@@ -30,33 +27,6 @@ class Config implements ConfigInterface
         return (array) $this->columnNames;
     }
 
-    public function getValidations()
-    {
-        
-    }
-
-    public function getColumnsAssociation()
-    {
-        return (array) $this->columnsAssociation;
-    }
-
-    public function setColumnsAssociation($columnsAssociation)
-    {
-        $this->columnsAssociation = $columnsAssociation;
-        return $this;
-    }
-
-    public function getExcelColumns()
-    {
-        return (array) $this->excelColumns;
-    }
-
-    public function setExcelColumns(array $columns)
-    {
-        $this->excelColumns = $columns;
-        return $this;
-    }
-
     public function getHeadersPosition()
     {
         return $this->headersPosition;
@@ -68,18 +38,6 @@ class Config implements ConfigInterface
         return $this;
     }
 
-    public function getDefaultMatch($column)
-    {
-
-        foreach ($this->getExcelColumns() as $index => $name) {
-            if (strtoupper($name) === strtoupper($column)) {
-                return $index;
-            }
-        }
-
-        return null;
-    }
-
     public function getRowClass()
     {
         return $this->rowClass;
@@ -88,17 +46,6 @@ class Config implements ConfigInterface
     public function setRowClass($rowClass)
     {
         $this->rowClass = $rowClass;
-        return $this;
-    }
-
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    public function setFilename($filename)
-    {
-        $this->filename = $filename;
         return $this;
     }
 
