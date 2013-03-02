@@ -63,6 +63,58 @@ Ya tenemos nuestra clase que representa una fila del excel creada, ahora procede
 
 Nuestra clase debe implementar tres métodos:
 
-    * getColumnNames: debe devolver un array con los nombres de las columnas que leeremos del excel.
-    * getHeadersPosition (opcional): debe devolver un array con 2 posiciones, la primera es el nombre de la columna donde se comenzarán a buscar los titulos reales de las columnas del excel y la segunda posicion es la fila donde se buscaran dichos titulos, por defecto si no se reescribe el método se devolverá array('A', 1), es decir, columna 'A' y fila 1 del excel.
-    * getRowClass: debe devolver una cadena con el nombre de la clase que tendrá el contenido de cada fila del excel ó una instancia de dicha clase.
+    * **getColumnNames:** debe devolver un array con los nombres de las columnas que leeremos del excel.
+    * **getHeadersPosition (opcional):** debe devolver un array con 2 posiciones, la primera es el nombre de la columna donde se comenzarán a buscar los titulos reales de las columnas del excel y la segunda posicion es la fila donde se buscaran dichos titulos, por defecto si no se reescribe el método se devolverá array('A', 1), es decir, columna 'A' y fila 1 del excel.
+    * **getRowClass:** debe devolver una cadena con el nombre de la clase que tendrá el contenido de cada fila del excel ó una instancia de dicha clase.
+
+Ahora vamos a usar las clases creadas en nuestro controlador:
+
+.. code-block:: php
+    
+    <?php
+
+    use MyBundle\MyConfig;
+
+    ...
+    //una acción de algun controlador
+    public function uploadAction()
+    {
+        $config = new MyConfig();
+
+        $config->setFilename("path/to/excel/filename.xls"); //establecemos la ruta y el nombre del excel a leer
+
+        //pasamos la config al método createForm del servicio excel_reader
+        //el cual nos devolverá un objeto de tipo Form mediante el cual el usuario hará
+        //un match de los campos reales del excel con los campos que especificamos en la clase MyConfig
+        $form = $this->get("excel_reader")->createForm($config);
+
+        if($this->getRequest()->isMethod("POST")){ //si el usuario envia el form
+            //llamamos al metodo exetute del servicio excel_reader, el cual leerá las filas del excel
+            //y por cada fila creará un objeto de tipo Persona y le pasará la data a dicho objeto.
+            $result = $this->get("excel_reader")->execute($this->getRequest());
+            //toda la data del excel está ahora disponible en el objeto $result, el cual es 
+            //una instancia de UploadExcelBundle\Result y podemos acceder a ella mediante los métodos
+            //$result->getData(), $result->getValids(), $result->getInvalids(), dichos métodos devuelve un
+            //array con las instancias de la clase Persona.
+            
+            //luego podemos recorrer los array y almacenarlos en la BD por ejemplo.
+
+            foreach($result->getValids() as $numFila => $persona){
+                var_dump($persona);
+            }
+        }
+
+        return $this->render("MyBundle:Controlador:upload.html.twig", array(
+            'form' => $form->createView(),
+        ));
+    }
+
+Nuestra vista quedará de la siguiente manera:
+
+.. code-block:: phtml
+
+    {{ form_widget(form) }} //tendremos una lista de selects con los titulos reales de las columnas del excel
+    //cada select tendrá a su izquierda un label con el nombre de la columna que especificamos en la clase Config.
+    {{ form_javascript(form) }} //esta función nos permite validar que no seleccionemos la misma columna varias veces, mediante jquery (debemos haberlo agregado con anterioridad)
+    {{ form_stylesheet(form) }} //le damos un diseño basico a nuestro formulario
+    
