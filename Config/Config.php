@@ -12,13 +12,13 @@ class Config implements ConfigInterface
     protected $columnsAssociation;
     protected $headersPosition;
     protected $rowClass;
+    protected $filename;
 
     public function __construct()
     {
         $this->setHeadersPosition();
     }
 
-    
     public function setColumnNames(array $culumnNames)
     {
         $this->columnNames = $culumnNames;
@@ -88,6 +88,17 @@ class Config implements ConfigInterface
     public function setRowClass($rowClass)
     {
         $this->rowClass = $rowClass;
+        return $this;
+    }
+
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
         return $this;
     }
 
