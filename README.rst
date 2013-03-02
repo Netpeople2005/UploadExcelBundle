@@ -118,3 +118,46 @@ Nuestra vista quedará de la siguiente manera:
     {{ form_javascript(form) }} //esta función nos permite validar que no seleccionemos la misma columna varias veces, mediante jquery (debemos haberlo agregado con anterioridad)
     {{ form_stylesheet(form) }} //le damos un diseño basico a nuestro formulario
     
+Validando Columnas del Excel
+------------
+
+Realmente es muy facil validar las columnas de las filas del excel, para ello solo debemos agregar validaciones a los atributos de nuestra clase Persona:
+
+.. code-block:: php
+
+    <?php
+
+    namespace MyBundle;
+
+    use UploadExcelBundle\ExcelRow;
+    use Symfony\Component\Validator\Constraints as Assert;
+
+    class Persona extends ExcelRow //nuestra clase debe extender de ExcelRow ó implementar ExcelRowInterface
+    {
+        /**
+         *  @Assert\NotBlank()
+         *
+         */
+        protected $nombres;
+
+        /**
+         *  @Assert\NotBlank()
+         *  @Assert\Numeric()
+         */
+        protected $edad;
+
+        /**
+         *  @Assert\NotBlank()
+         *  @Assert\Email()
+         */
+        protected $email;
+
+        public function setNombres($nombres){ $this->nombres = $nombres; }
+        public function setEdad($edad){ $this->edad = $edad; }
+        public function setEmail($email){ $this->email = $email; }
+        public function getNombres(){ return $this->nombres; }
+        public function getEdad(){ $this->edad; }
+        public function getEmail(){ $this->email; }
+    }
+
+Como ven es muy facil agregar validaciones para las columnas del excel, cuando el servicio reader_excel nos devuelva el objeto result con la data, si hay data invalida podremos obtenerla mediente el método $result->getInvalids() el cual nos devolverá un array con las filas que contienen data invalida, ademas nuestra clase Persona tiene un método getErrors mediante el cual podemos obtener los errores entontrados.
