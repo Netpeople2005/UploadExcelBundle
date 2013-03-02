@@ -33,7 +33,6 @@ class ExcelReader
      * @var Validator
      */
     protected $validator;
-    protected $rootDir;
 
     /**
      *
@@ -53,11 +52,10 @@ class ExcelReader
      */
     protected $excel;
 
-    function __construct(FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher, $rootDir)
+    function __construct(FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
-        $this->rootDir = $rootDir;
     }
 
     public function createForm(ConfigInterface $config, FormTypeInterface $form = null, array $options = array())
@@ -98,7 +96,7 @@ class ExcelReader
 
     protected function readHeadersExcel()
     {
-        $excelFile = dirname($this->rootDir) . '/files/excel.xls';
+        $excelFile = $this->config->getFilename();
 
         $this->excel = \PHPExcel_IOFactory::load($excelFile);
         $sheet = $this->excel->getActiveSheet();
