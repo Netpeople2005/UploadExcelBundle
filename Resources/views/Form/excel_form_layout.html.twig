@@ -1,0 +1,48 @@
+{% block form_javascript %}
+{% spaceless %}
+<script type="text/javascript">
+    (function($){
+        $("#{{ id }}_items select").on("focus",function(event){
+            event.preventDefault()
+            $(this).data("previous_value", $(this).val())
+        })
+        $("#{{ id }}_items select").on("change",function(event){
+            event.preventDefault()
+            var actual = $(this)
+            $("#{{ id }}_items select").not(this).each(function(){
+                if($(this).val() == actual.val()){
+                    alert("{{ "El valor ya está en uso"|trans }}");
+                    actual.val(actual.data("previous_value"))
+                    return false;
+                }
+            })
+        })
+    })(jQuery);
+</script>
+{% endspaceless %}
+{% endblock form_javascript %}
+
+{% block form_stylesheet %}
+{% spaceless %}
+<style type="text/css">
+    #{{ id }}_items{list-style: none; display: inline-block; margin: 0px;padding: 0px}
+    #{{ id }}_items li{margin: 5px; background-color: #f7f7f7;padding: 0px 10px}
+    #{{ id }}_items li label{margin: 10px; display: inline-block; min-width: 150px}
+    #{{ id }}_items li select{min-width: 150px}
+    #{{ id }}_items li ul{list-style: none}
+    #{{ id }}_items li.error{color: red}
+</style>
+{% endspaceless %}
+{% endblock form_stylesheet %}
+
+{% block columns_widget %}
+<ul id="{{ id }}_items">
+{% for child in form.columnsAssociation %}
+        <li class="{% if child.vars.errors %}error{% endif %}">
+            {{ form_label(child) }}
+            {{ form_widget(child) }}
+            {{ form_errors(child) }}
+        </li>
+{% endfor %}
+</ul>
+{% endblock columns_widget %}

@@ -1,6 +1,7 @@
 parameters:
     excel_uploader.class: K2\UploadExcelBundle\Service\ExcelReader
     excel_validator.class: K2\UploadExcelBundle\Service\Validator
+    upload_excel.twig.extension.form.class: K2\UploadExcelBundle\Twig\Extension\FormExtension
 
 services:
     excel_reader:
@@ -14,3 +15,9 @@ services:
         class: %excel_validator.class%
         arguments: 
             - "@validator"
+    upload_excel.twig.extension.form:
+        class: %upload_excel.twig.extension.form.class%
+        arguments: 
+            - "@twig.form.renderer"
+        tags:
+           - { name: twig.extension }

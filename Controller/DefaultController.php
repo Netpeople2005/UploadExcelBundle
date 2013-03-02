@@ -21,17 +21,19 @@ class DefaultController extends Controller
 
         $form = $this->get("excel_reader")->createForm($config);
         
+        $errors = null;
+        
         if($this->getRequest()->isMethod('POST')){
             
             $result = $this->get("excel_reader")->execute($this->getRequest());
                         
-            var_dump($result->getData());            
-            var_dump((string)current($result->getInvalids())->getErrors());            
+            $errors = (string)current($result->getInvalids())->getErrors();            
         }
 
         return $this->render('UploadExcelBundle:Default:index.html.twig'
                         , array(
                     'form' => $form->createView(),
+                    'errors' => $errors,
                 ));
     }
 
