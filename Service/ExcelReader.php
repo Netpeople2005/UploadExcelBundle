@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Form;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use K2\UploadExcelBundle\Result;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use K2\UploadExcelBundle\Service\Validator;
 
 class ExcelReader
 {
@@ -25,7 +27,12 @@ class ExcelReader
      * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
-    protected $rootDir;
+
+    /**
+     *
+     * @var Validator
+     */
+    protected $validator;
 
     /**
      *
@@ -45,11 +52,10 @@ class ExcelReader
      */
     protected $excel;
 
-    function __construct(FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher, $rootDir)
+    function __construct(FormFactoryInterface $formFactory, EventDispatcherInterface $eventDispatcher)
     {
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
-        $this->rootDir = $rootDir;
     }
 
     public function createForm(ConfigInterface $config, FormTypeInterface $form = null, array $options = array())
@@ -65,11 +71,14 @@ class ExcelReader
         return $this->form = $this->formFactory->create($form, $config, $options);
     }
 
+    /**
+     * 
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return Result el resultado con la data y validado
+     */
     public function execute(Request $request)
     {
         $this->form->bind($request);
-
-        $result = new Result();
 
         $data = $this->excel->getActiveSheet()->toArray(null, true, true, true);
 
@@ -77,16 +86,17 @@ class ExcelReader
 
         unset($data[$rowHeader]);
 
-        $data = $this->convertIndexesToHeaderNames($data);
-
-        $result->setData($data);
-
-        var_dump($this->config, $result);
+        $result =  $this->createResult($data);
+        
+        $this->validator->validate($result);
+        
+        return $result;
+        
     }
 
     protected function readHeadersExcel()
     {
-        $excelFile = dirname($this->rootDir) . '/files/excel.xls';
+        $excelFile = $this->config->getFilename();
 
         $this->excel = \PHPExcel_IOFactory::load($excelFile);
         $sheet = $this->excel->getActiveSheet();
@@ -107,20 +117,60 @@ class ExcelReader
         $this->config->setExcelColumns($headers);
     }
 
-    protected function convertIndexesToHeaderNames(array $data)
+    /**
+     * 
+     * @param array $excelData
+     * @return \K2\UploadExcelBundle\Result
+     * @throws \UnexpectedValueException
+     */
+    public function createResult(array $excelData)
     {
-        $columnsName = array_flip($this->config->getColumnsAssociation());
+        $rowClass = $this->config->getRowClass();
 
-        foreach ($data as $rowIndex => $rowData) {
-            foreach ($rowData as $column => $value) {
-                unset($data[$rowIndex][$column]);
-                if (array_key_exists($column, $columnsName)) {
-                    $data[$rowIndex][$columnsName[$column]] = $value;
-                }
-            }
+        if (is_object($rowClass)) {
+            $rowClass = get_class($rowClass);
         }
 
-        return $data;
+        if (!is_string($rowClass) || empty($rowClass)) {
+            throw new \UnexpectedValueException(sprintf("El método 'getConfig' de la clase '%s' debe devolver un string con el nombre de una clase válida ó una instancia", get_class($this->config)));
+        }
+
+        $reflection = new \ReflectionClass($rowClass);
+
+        if (!$reflection->isSubclassOf('K2\\UploadExcelBundle\\ExcelRowInterface')) {
+            //excepcion
+        }
+
+        unset($reflection);
+
+        $normalizer = new GetSetMethodNormalizer();
+        $result = new Result();
+
+        $columnsName = array_flip($this->config->getColumnsAssociation());
+
+        foreach ($excelData as $rowIndex => $rowData) {
+            foreach ($rowData as $column => $value) {
+                unset($excelData[$rowIndex][$column]);
+                if (array_key_exists($column, $columnsName)) {
+                    $excelData[$rowIndex][$columnsName[$column]] = $value;
+                }
+            }
+            $rowObject = $normalizer->denormalize($excelData[$rowIndex], new $rowClass());
+            $rowObject->setRow($rowIndex);
+            $result->addRow($rowObject);
+        }
+
+        return $result;
+    }
+
+    public function getValidator()
+    {
+        return $this->validator;
+    }
+
+    public function setValidator(Validator $validator)
+    {
+        $this->validator = $validator;
     }
 
 }

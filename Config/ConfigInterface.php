@@ -13,7 +13,7 @@ interface ConfigInterface
      */
     public function getColumnNames();
 
-    public function getValidations();
+    public function getRowClass();
 
     public function setExcelColumns(array $columns);
 
@@ -24,7 +24,11 @@ interface ConfigInterface
     public function getColumnsAssociation();
 
     public function setColumnsAssociation($columnsAssociation);
-    
+
     public function getDefaultMatch($column);
+
+    public function getFilename();
+
+    public function setFilename($filename);
 }
 
