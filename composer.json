@@ -1,0 +1,13 @@
+{
+    "name": "manuelj555/uploadexcel",
+    "description": "Bundle que permite leer archivos excel de manera sencilla",
+    "require": {
+        "php": ">=5.3.3",
+        "CodePlex/PHPExcel": "dev-master"
+    },
+    "autoload":{
+        "psr-0": { "K2\\UploadExcelBundle" : "" }
+    },
+    "target-dir": "K2/UploadExcelBundle",
+    "minimum-stability": "dev"
+}
