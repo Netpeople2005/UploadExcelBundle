@@ -32,8 +32,13 @@ abstract class AbstractConfig implements ConfigInterface
         $this->excelColumns = $columns;
         return $this;
     }
+    
+    public function getColumnAlias()
+    {
+        return array();
+    }
 
-    /**
+        /**
      * 
      * @param string $column columna de la entidad
      * @return null
