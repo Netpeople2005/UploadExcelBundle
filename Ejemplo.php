@@ -8,9 +8,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Ejemplo extends ExcelRow
 {
 
+    /**
+     *
+     * @Assert\NotBlank()
+     */
     protected $nombres;
+
+    /**
+     *
+     * @Assert\NotBlank()
+     */
     protected $apellidos;
+
+    /**
+     *
+     * @Assert\NotBlank()
+     */
     protected $edad;
+
     /**
      *
      * @var type 

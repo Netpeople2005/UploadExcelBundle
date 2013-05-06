@@ -26,10 +26,16 @@ class ColumnsType extends AbstractType
 
         $associations = $builder->create("columnsAssociation", "form", array(
             'by_reference' => false,
-                ));
+        ));
+
+        $alias = (array) $options['data']->getColumnAlias();
+
         foreach ($options['data']->getColumnNames() as $name) {
+
+            $label = isset($alias[$name]) ? $alias[$name] : $name;
+
             $associations->add($name, 'choice', array(
-                'label' => $name,
+                'label' => $label,
                 'empty_value' => '--select--',
                 'choices' => $options['data']->getExcelColumns(),
                 'data' => $options['data']->getDefaultMatch($name),

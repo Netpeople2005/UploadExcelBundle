@@ -8,6 +8,7 @@ class Config extends AbstractConfig
 {
 
     protected $columnNames;
+    protected $columnAlias;
     protected $headersPosition;
     protected $rowClass;
 
@@ -25,6 +26,17 @@ class Config extends AbstractConfig
     public function getColumnNames()
     {
         return (array) $this->columnNames;
+    }
+
+    public function getColumnAlias()
+    {
+        return (array) $this->columnAlias;
+    }
+
+    public function setColumnAlias(array $columnAlias)
+    {
+        $this->columnAlias = $columnAlias;
+        return $this;
     }
 
     public function getHeadersPosition()

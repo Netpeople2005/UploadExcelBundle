@@ -33,9 +33,20 @@ abstract class AbstractConfig implements ConfigInterface
         return $this;
     }
 
+    /**
+     * 
+     * @param string $column columna de la entidad
+     * @return null
+     */
     public function getDefaultMatch($column)
     {
+        $alias = (array) $this->getColumnAlias();
+
         foreach ($this->getExcelColumns() as $index => $name) {
+            //si existe un alias para la columna, devolvemos el indice de la columna
+            if (isset($alias[$column]) && (strtoupper($alias[$column]) === strtoupper($name))) {
+                return $index;
+            }
             if (strtoupper($name) === strtoupper($column)) {
                 return $index;
             }
@@ -57,7 +68,7 @@ abstract class AbstractConfig implements ConfigInterface
 
     public function getHeadersPosition()
     {
-        return array('A', 1);//por defecto la columna A y la fila 1
+        return array('A', 1); //por defecto la columna A y la fila 1
     }
 
 }
