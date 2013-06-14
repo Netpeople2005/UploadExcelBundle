@@ -13,7 +13,7 @@ abstract class AbstractConfig implements ConfigInterface
 
     public function getColumnsAssociation()
     {
-        return (array) $this->columnsAssociation;
+        return array_filter((array) $this->columnsAssociation);
     }
 
     public function setColumnsAssociation($columnsAssociation)
