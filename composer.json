@@ -3,7 +3,7 @@
     "description": "Bundle que permite leer archivos excel de manera sencilla",
     "require": {
         "php": ">=5.3.3",
-        "CodePlex/PHPExcel": "dev-master"
+        "codeplex/phpexcel": "*"
     },
     "autoload":{
         "psr-0": { "K2\\UploadExcelBundle" : "" }
