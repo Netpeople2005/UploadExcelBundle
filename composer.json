@@ -8,6 +8,5 @@
     "autoload":{
         "psr-0": { "K2\\UploadExcelBundle" : "" }
     },
-    "target-dir": "K2/UploadExcelBundle",
-    "minimum-stability": "dev"
+    "target-dir": "K2/UploadExcelBundle"
 }
