@@ -48,13 +48,13 @@ class Result
 
     public function addRow(ExcelRowInterface $excelRow)
     {
-        $this->data[$excelRow->getRow()] = $excelRow;
+        $this->data[$excelRow->getNumRow()] = $excelRow;
         return $this;
     }
 
     public function addRowInvalid(ExcelRowInterface $excelRow)
     {
-        $this->invalids[$excelRow->getRow()] = $excelRow;
+        $this->invalids[$excelRow->getNumRow()] = $excelRow;
         return $this;
     }
 

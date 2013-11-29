@@ -3,6 +3,7 @@
 namespace K2\UploadExcelBundle\Config;
 
 use K2\UploadExcelBundle\Config\ConfigInterface;
+use K2\UploadExcelBundle\RowValidatorInterface;
 
 abstract class AbstractConfig implements ConfigInterface
 {
@@ -10,6 +11,7 @@ abstract class AbstractConfig implements ConfigInterface
     protected $excelColumns;
     protected $columnsAssociation;
     protected $filename;
+    protected $rowValidators = array();
 
     public function getColumnsAssociation()
     {
@@ -75,5 +77,18 @@ abstract class AbstractConfig implements ConfigInterface
     {
         return array('A', 1); //por defecto la columna A y la fila 1
     }
+    
+    public function getRowValidators()
+    {
+        return $this->rowValidators;
+    }
+
+    public function addRowValidator(RowValidatorInterface $validator)
+    {
+        $this->rowValidators[] = $validator;
+        return $this;
+    }
+
+
 
 }

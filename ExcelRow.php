@@ -3,22 +3,22 @@
 namespace K2\UploadExcelBundle;
 
 use K2\UploadExcelBundle\ExcelRowInterface;
-use \Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ExcelRow implements ExcelRowInterface
 {
 
-    private $row;
+    private $numRow;
     private $errors;
 
-    public function getRow()
+    public function getNumRow()
     {
-        return $this->row;
+        return $this->numRow;
     }
 
-    public function setRow($row)
+    public function setNumRow($row)
     {
-        $this->row = $row;
+        $this->numRow = $row;
         return $this;
     }
 
@@ -27,7 +27,7 @@ class ExcelRow implements ExcelRowInterface
         return $this->errors;
     }
 
-    public function setErrors(ConstraintViolationList $list)
+    public function setErrors(ConstraintViolationListInterface $list)
     {
         $this->errors = $list;
         return $this;

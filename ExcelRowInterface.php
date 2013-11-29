@@ -2,14 +2,25 @@
 
 namespace K2\UploadExcelBundle;
 
-use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 interface ExcelRowInterface
 {
 
-    public function setRow($row);
-    public function getRow();
-    public function setErrors(ConstraintViolationList $list);
+    /**
+     * @param array $row
+     */
+    public function setNumRow($row);
+
+    /**
+     * @return array
+     */
+    public function getNumRow();
+
+    public function setErrors(ConstraintViolationListInterface $list);
+
+    /**
+     * @return ConstraintViolationListInterface
+     */
     public function getErrors();
-    
 }

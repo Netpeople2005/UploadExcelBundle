@@ -2,8 +2,9 @@
 
 namespace K2\UploadExcelBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use K2\UploadExcelBundle\Config\Config;
+use K2\UploadExcelBundle\MiValidador;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
@@ -20,8 +21,8 @@ class DefaultController extends Controller
                 ))
                 ->setExcelColumns(array('mas fino', 'otra columna'))
                 ->setRowClass('K2\\UploadExcelBundle\\Ejemplo')
-                ->setFilename($this->container
-                        ->getParameter("kernel.root_dir") . '/../files/excel.xls');
+                ->setFilename('F:/excel.xlsx')
+                ->addRowValidator(new MiValidador());
 
         $form = $this->get("excel_reader")->createForm($config);
 
@@ -32,9 +33,11 @@ class DefaultController extends Controller
             $result = $this->get("excel_reader")->execute($this->getRequest());
 
             var_dump($result->getData());
-            
+
             if (count($result->getInvalids())) {
-                $errors = (string) current($result->getInvalids())->getErrors();
+                foreach ($result->getInvalids() as $row) {
+                    $errors .= (string) $row->getErrors() . PHP_EOL;
+                }
             } else {
                 $errors = null;
             }

@@ -19,13 +19,18 @@ class Validator
         $this->validator = $validator;
     }
 
-    public function validate(Result $dataResult)
+    public function validate(\K2\UploadExcelBundle\Config\ConfigInterface $config, Result $dataResult)
     {
         $dataResult->setInvalids(array());
         foreach ($dataResult->getData() as $row) {
             $list = $this->validator->validate($row);
+            $row->setErrors($list);
+            //abrimos la posibilidad de validar cualquier cosa en una fila
+            foreach ($config->getRowValidators() as $validator) {
+                $validator->validate($row);
+            }
+            
             if ($list->count()) {
-                $row->setErrors($list);
                 $dataResult->addRowInvalid($row);
             }
         }

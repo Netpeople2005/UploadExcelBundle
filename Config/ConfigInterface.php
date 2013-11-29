@@ -32,5 +32,6 @@ interface ConfigInterface
     public function getFilename();
 
     public function setFilename($filename);
-}
 
+    public function getRowValidators();
+}

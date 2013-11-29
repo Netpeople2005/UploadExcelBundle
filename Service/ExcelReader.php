@@ -86,12 +86,11 @@ class ExcelReader
 
         unset($data[$rowHeader]);
 
-        $result =  $this->createResult($data);
-        
-        $this->validator->validate($result);
-        
+        $result = $this->createResult($data);
+
+        $this->validator->validate($this->config, $result);
+
         return $result;
-        
     }
 
     protected function readHeadersExcel()
@@ -138,7 +137,7 @@ class ExcelReader
         $reflection = new \ReflectionClass($rowClass);
 
         if (!$reflection->isSubclassOf('K2\\UploadExcelBundle\\ExcelRowInterface')) {
-            //excepcion
+            throw new \UnexpectedValueException(sprintf("la clase %s debe implementar la interfaz K2\\UploadExcelBundle\\ExcelRowInterface", $rowClass));
         }
 
         unset($reflection);
@@ -156,7 +155,7 @@ class ExcelReader
                 }
             }
             $rowObject = $normalizer->denormalize($excelData[$rowIndex], new $rowClass());
-            $rowObject->setRow($rowIndex);
+            $rowObject->setNumRow($rowIndex);
             $result->addRow($rowObject);
         }
 
