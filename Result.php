@@ -4,12 +4,19 @@ namespace K2\UploadExcelBundle;
 
 use K2\UploadExcelBundle\ExcelRowInterface;
 
-class Result
+class Result implements \IteratorAggregate
 {
 
     protected $data;
     protected $invalids;
     protected $headers;
+
+    function __construct($data = array())
+    {
+        foreach ($data as $row) {
+            $this->addRow($row);
+        }
+    }
 
     public function getData()
     {
@@ -56,6 +63,11 @@ class Result
     {
         $this->invalids[$excelRow->getNumRow()] = $excelRow;
         return $this;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->getData());
     }
 
 }
