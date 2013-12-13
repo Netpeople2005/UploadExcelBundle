@@ -38,6 +38,7 @@ class ColumnsType extends AbstractType
                 'label' => $label,
                 'empty_value' => '--select--',
                 'choices' => $options['data']->getExcelColumns(),
+                'required' => false,
                 'data' => $options['data']->getDefaultMatch($name),
                 'constraints' => array(
                     new Callback(array('methods' => array(function($data, ExecutionContext $context) use (&$columnsUsed) {

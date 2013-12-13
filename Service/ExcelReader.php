@@ -80,7 +80,8 @@ class ExcelReader
     {
         $this->form->bind($request);
 
-        $data = $this->excel->getActiveSheet()->toArray(null, true, true, true);
+        $data = $this->excel->getActiveSheet()->toArray(null, true, false, true);
+        $this->excel->disconnectWorksheets();
 
         list($columnHeader, $rowHeader) = $this->config->getHeadersPosition();
 
@@ -148,6 +149,9 @@ class ExcelReader
         $columnsName = array_flip($this->config->getColumnsAssociation());
 
         foreach ($excelData as $rowIndex => $rowData) {
+            if(0 === count(array_filter($rowData))){
+                break;
+            }
             foreach ($rowData as $column => $value) {
                 unset($excelData[$rowIndex][$column]);
                 if (array_key_exists($column, $columnsName)) {
