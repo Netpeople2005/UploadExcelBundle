@@ -3,15 +3,21 @@
 namespace K2\UploadExcelBundle\Service;
 
 use K2\UploadExcelBundle\Config\ConfigInterface;
-use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use K2\UploadExcelBundle\Form\Type\ColumnsType;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Form;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use K2\UploadExcelBundle\Result;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use K2\UploadExcelBundle\Service\Validator;
+use PHPExcel;
+use PHPExcel_CachedObjectStorageFactory;
+use PHPExcel_IOFactory;
+use PHPExcel_Settings;
+use ReflectionClass;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use UnexpectedValueException;
 
 class ExcelReader
 {
@@ -48,7 +54,7 @@ class ExcelReader
 
     /**
      *
-     * @var \PHPExcel
+     * @var PHPExcel
      */
     protected $excel;
 
@@ -73,7 +79,7 @@ class ExcelReader
 
     /**
      * 
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      * @return Result el resultado con la data y validado
      */
     public function execute(Request $request)
@@ -88,7 +94,7 @@ class ExcelReader
         unset($data[$rowHeader]);
 
         $result = $this->createResult($data);
-
+        
         $this->validator->validate($this->config, $result);
 
         return $result;
@@ -98,7 +104,15 @@ class ExcelReader
     {
         $excelFile = $this->config->getFilename();
 
-        $this->excel = \PHPExcel_IOFactory::load($excelFile);
+        $cacheMethod = PHPExcel_CachedObjectStorageFactory:: cache_to_phpTemp;
+        $cacheSettings = array(' memoryCacheSize ' => '8MB');
+        PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+
+        $reader = PHPExcel_IOFactory::createReaderForFile($excelFile);
+        $sheets = $reader->listWorksheetNames($excelFile);
+        $reader->setLoadSheetsOnly($sheets[0]);
+        $reader->setReadDataOnly(true);
+        $this->excel = $reader->load($excelFile);
         $sheet = $this->excel->getActiveSheet();
 
         list($column, $row) = $this->config->getHeadersPosition();
@@ -120,8 +134,8 @@ class ExcelReader
     /**
      * 
      * @param array $excelData
-     * @return \K2\UploadExcelBundle\Result
-     * @throws \UnexpectedValueException
+     * @return Result
+     * @throws UnexpectedValueException
      */
     public function createResult(array $excelData)
     {
@@ -132,13 +146,13 @@ class ExcelReader
         }
 
         if (!is_string($rowClass) || empty($rowClass)) {
-            throw new \UnexpectedValueException(sprintf("El método 'getConfig' de la clase '%s' debe devolver un string con el nombre de una clase válida ó una instancia", get_class($this->config)));
+            throw new UnexpectedValueException(sprintf("El método 'getConfig' de la clase '%s' debe devolver un string con el nombre de una clase válida ó una instancia", get_class($this->config)));
         }
 
-        $reflection = new \ReflectionClass($rowClass);
+        $reflection = new ReflectionClass($rowClass);
 
         if (!$reflection->isSubclassOf('K2\\UploadExcelBundle\\ExcelRowInterface')) {
-            throw new \UnexpectedValueException(sprintf("la clase %s debe implementar la interfaz K2\\UploadExcelBundle\\ExcelRowInterface", $rowClass));
+            throw new UnexpectedValueException(sprintf("la clase %s debe implementar la interfaz K2\\UploadExcelBundle\\ExcelRowInterface", $rowClass));
         }
 
         unset($reflection);
@@ -149,7 +163,7 @@ class ExcelReader
         $columnsName = array_flip($this->config->getColumnsAssociation());
 
         foreach ($excelData as $rowIndex => $rowData) {
-            if(0 === count(array_filter($rowData))){
+            if (0 === count(array_filter($rowData))) {
                 break;
             }
             foreach ($rowData as $column => $value) {

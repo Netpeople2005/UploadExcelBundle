@@ -2,15 +2,16 @@
 
 namespace K2\UploadExcelBundle;
 
+use K2\UploadExcelBundle\DependencyInjection\Compiler\UploadPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use K2\UploadExcelBundle\DependencyInjection\Compiler\FormPass;
 
 class UploadExcelBundle extends Bundle
 {
     
-    public function build(\Symfony\Component\DependencyInjection\ContainerBuilder $container)
+    public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new FormPass());
+        $container->addCompilerPass(new UploadPass());
     }
 
 }

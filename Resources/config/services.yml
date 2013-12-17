@@ -2,6 +2,7 @@ parameters:
     excel_uploader.class: K2\UploadExcelBundle\Service\ExcelReader
     excel_validator.class: K2\UploadExcelBundle\Service\Validator
     upload_excel.twig.extension.form.class: K2\UploadExcelBundle\Twig\Extension\FormExtension
+    upload_excel.excel_to_csv_converter.class: K2\UploadExcelBundle\Service\ExcelToCsv
 
 services:
     excel_reader:
@@ -21,3 +22,9 @@ services:
             - "@twig.form.renderer"
         tags:
            - { name: twig.extension }
+           
+    upload_excel.excel_to_csv_converter:
+        class: %upload_excel.excel_to_csv_converter.class%
+        arguments: 
+            - %assetic.java.bin%
+            - %upload_excel.output_dir%

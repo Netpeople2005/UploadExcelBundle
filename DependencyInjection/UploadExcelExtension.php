@@ -24,5 +24,7 @@ class UploadExcelExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        
+        $container->setParameter('upload_excel.output_dir', $config['output_dir']);
     }
 }

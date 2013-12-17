@@ -19,10 +19,18 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('upload_excel');
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        
+        $rootNode
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('convert_to_csv')
+                        ->defaultFalse()
+                    ->end()
+                    ->scalarNode('output_dir')
+                        ->defaultValue("%kernel.root_dir%/cache/csv")
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }
