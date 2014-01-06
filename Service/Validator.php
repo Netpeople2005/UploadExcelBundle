@@ -23,7 +23,7 @@ class Validator
     {
         $dataResult->setInvalids(array());
         foreach ($dataResult->getData() as $row) {
-            $list = $this->validator->validate($row);
+            $list = $this->validator->validate($row, $config->getValidationGroups());
             $row->setErrors($list);
             //abrimos la posibilidad de validar cualquier cosa en una fila
             foreach ($config->getRowValidators() as $validator) {

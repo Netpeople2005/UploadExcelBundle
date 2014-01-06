@@ -12,6 +12,7 @@ abstract class AbstractConfig implements ConfigInterface
     protected $columnsAssociation;
     protected $filename;
     protected $rowValidators = array();
+    protected $validationGroups = array();
 
     public function getColumnsAssociation()
     {
@@ -34,13 +35,13 @@ abstract class AbstractConfig implements ConfigInterface
         $this->excelColumns = $columns;
         return $this;
     }
-    
+
     public function getColumnAlias()
     {
         return array();
     }
 
-        /**
+    /**
      * 
      * @param string $column columna de la entidad
      * @return null
@@ -77,7 +78,7 @@ abstract class AbstractConfig implements ConfigInterface
     {
         return array('A', 1); //por defecto la columna A y la fila 1
     }
-    
+
     public function getRowValidators()
     {
         return $this->rowValidators;
@@ -89,6 +90,15 @@ abstract class AbstractConfig implements ConfigInterface
         return $this;
     }
 
+    public function getValidationGroups()
+    {
+        return $this->validationGroups;
+    }
 
+    public function setValidationGroups($validationGroups)
+    {
+        $this->validationGroups = $validationGroups;
+        return $this;
+    }
 
 }
