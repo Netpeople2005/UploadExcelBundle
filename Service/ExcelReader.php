@@ -14,6 +14,7 @@ use ReflectionClass;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -64,6 +65,13 @@ class ExcelReader
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * 
+     * @param ConfigInterface $config
+     * @param FormTypeInterface $form
+     * @param array $options
+     * @return FormInterface
+     */
     public function createForm(ConfigInterface $config, FormTypeInterface $form = null, array $options = array())
     {
         $this->config = $config;
@@ -82,9 +90,11 @@ class ExcelReader
      * @param Request $request
      * @return Result el resultado con la data y validado
      */
-    public function execute(Request $request)
+    public function execute(Request $request = null)
     {
-        $this->form->bind($request);
+        if (!$this->form->isSubmitted() and $request) {
+            $this->form->submit($request);//por ahora, más adelante se quitará
+        }
 
         $data = $this->excel->getActiveSheet()->toArray(null, true, false, true);
         $this->excel->disconnectWorksheets();
@@ -94,7 +104,7 @@ class ExcelReader
         unset($data[$rowHeader]);
 
         $result = $this->createResult($data);
-        
+
         $this->validator->validate($this->config, $result);
 
         return $result;
