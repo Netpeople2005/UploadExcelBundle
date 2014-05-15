@@ -41,6 +41,11 @@ abstract class AbstractConfig implements ConfigInterface
         return array();
     }
 
+    public function getRequiredColumns()
+    {
+        return array();
+    }
+
     /**
      * 
      * @param string $column columna de la entidad

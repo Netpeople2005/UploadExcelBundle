@@ -12,6 +12,7 @@ interface ConfigInterface
      * @return array 
      */
     public function getColumnNames();
+    public function getRequiredColumns();
 
     public function getColumnAlias();
 

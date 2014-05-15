@@ -2,9 +2,10 @@
 
 namespace K2\UploadExcelBundle\Form\Type;
 
+use K2\UploadExcelBundle\Config\ConfigInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use K2\UploadExcelBundle\Config\ConfigInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\ExecutionContext;
 
@@ -29,6 +30,7 @@ class ColumnsType extends AbstractType
         ));
 
         $alias = (array) $options['data']->getColumnAlias();
+        $required = (array) $options['data']->getRequiredColumns();
 
         foreach ($options['data']->getColumnNames() as $name) {
 
@@ -38,7 +40,7 @@ class ColumnsType extends AbstractType
                 'label' => $label,
                 'empty_value' => '--select--',
                 'choices' => $options['data']->getExcelColumns(),
-                'required' => false,
+                'required' => in_array($name, $required),
                 'data' => $options['data']->getDefaultMatch($name),
                 'constraints' => array(
                     new Callback(array('methods' => array(function($data, ExecutionContext $context) use (&$columnsUsed) {

@@ -8,6 +8,7 @@ class Config extends AbstractConfig
 {
 
     protected $columnNames;
+    protected $requiredColumns;
     protected $columnAlias;
     protected $headersPosition;
     protected $rowClass;
@@ -59,6 +60,16 @@ class Config extends AbstractConfig
     {
         $this->rowClass = $rowClass;
         return $this;
+    }
+
+    public function getRequiredColumns()
+    {
+        return $this->requiredColumns;
+    }
+
+    public function setRequiredColumns($requiredColumns)
+    {
+        $this->requiredColumns = $requiredColumns;
     }
 
 }
