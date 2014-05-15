@@ -16,6 +16,8 @@ services:
         class: %excel_validator.class%
         arguments: 
             - "@validator"
+            - "@event_dispatcher"
+            - "@service_container"
     upload_excel.twig.extension.form:
         class: %upload_excel.twig.extension.form.class%
         arguments: 

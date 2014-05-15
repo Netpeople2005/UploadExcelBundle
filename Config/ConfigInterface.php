@@ -11,6 +11,7 @@ interface ConfigInterface
      * 
      * @return array 
      */
+    public function getName();
     public function getColumnNames();
     public function getRequiredColumns();
 

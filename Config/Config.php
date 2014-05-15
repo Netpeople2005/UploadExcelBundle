@@ -7,15 +7,27 @@ use K2\UploadExcelBundle\Config\AbtractConfig;
 class Config extends AbstractConfig
 {
 
+    protected $name;
     protected $columnNames;
     protected $requiredColumns;
     protected $columnAlias;
     protected $headersPosition;
     protected $rowClass;
 
-    public function __construct()
+    public function __construct($name = null)
     {
         $this->setHeadersPosition();
+        $this->setName($name);
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     public function setColumnNames(array $culumnNames)

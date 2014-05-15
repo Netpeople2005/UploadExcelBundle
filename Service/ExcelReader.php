@@ -3,6 +3,8 @@
 namespace K2\UploadExcelBundle\Service;
 
 use K2\UploadExcelBundle\Config\ConfigInterface;
+use K2\UploadExcelBundle\Event\ExcelReadEvent;
+use K2\UploadExcelBundle\UploadExcelEvents;
 use K2\UploadExcelBundle\Form\Type\ColumnsType;
 use K2\UploadExcelBundle\Result;
 use K2\UploadExcelBundle\Service\Validator;
@@ -90,10 +92,10 @@ class ExcelReader
      * @param Request $request
      * @return Result el resultado con la data y validado
      */
-    public function execute(Request $request = null)
+    public function execute(Request $request = null, $eventName = null)
     {
         if (!$this->form->isSubmitted() and $request) {
-            $this->form->submit($request);//por ahora, más adelante se quitará
+            $this->form->submit($request); //por ahora, más adelante se quitará
         }
 
         $data = $this->excel->getActiveSheet()->toArray(null, true, false, true);
@@ -102,12 +104,22 @@ class ExcelReader
         list($columnHeader, $rowHeader) = $this->config->getHeadersPosition();
 
         unset($data[$rowHeader]);
+        
+        $event = new ExcelReadEvent($data);
+        unset($data);
 
-        $result = $this->createResult($data);
+        $name = sprintf(UploadExcelEvents::PRE_CREATE_RESULT, $this->resolveEventName($eventName));
+        $this->eventDispatcher->dispatch($name, $event);
 
-        $this->validator->validate($this->config, $result);
+        $event->setRows($this->createResult($event->getRows()));
+        
+        $name = sprintf(UploadExcelEvents::POST_CREATE_RESULT, $this->resolveEventName($eventName));
+        $this->eventDispatcher->dispatch($name, $event);
 
-        return $result;
+        $this->validator->validate($this->config, $event->getRows()
+                , $this->resolveEventName($eventName));
+
+        return $event->getRows();
     }
 
     protected function readHeadersExcel()
@@ -198,6 +210,11 @@ class ExcelReader
     public function setValidator(Validator $validator)
     {
         $this->validator = $validator;
+    }
+
+    private function resolveEventName($name = null)
+    {
+        return $name ? : $this->config->getName();
     }
 
 }
